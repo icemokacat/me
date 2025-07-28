@@ -5,12 +5,13 @@
   <div class="container">
     <nav class="nav">
       <div class="logo">
-        <h1>김백엔드</h1>
+        <a href="#hero">Portfolio</a>
       </div>
       <div class="nav-links">
-        <a href="#profile">프로필</a>
-        <a href="#experience">경험</a>
-        <a href="#contact">연락처</a>
+        <a href="#skills">Skills</a>
+        <a href="#projects">Experience</a>
+        <a href="#career">Career</a>
+        <a href="#contact">Contact</a>
       </div>
     </nav>
   </div>
@@ -18,13 +19,16 @@
 
 <style>
   .header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
-    border-bottom: 1px solid #e8e8e8;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    padding: 16px 0;
+    border-bottom: 1px solid #eee;
+    z-index: 1000;
+    padding: 15px 0;
+    transition: all 0.3s ease;
   }
 
   .nav {
@@ -33,29 +37,34 @@
     align-items: center;
   }
 
-  .logo h1 {
+  .logo a {
     font-size: 1.5rem;
     font-weight: 700;
-    color: #2c3e50;
-    margin: 0;
+    color: #2c2c2c;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+
+  .logo a:hover {
+    color: #f9c51d;
   }
 
   .nav-links {
     display: flex;
-    gap: 32px;
+    gap: 40px;
     align-items: center;
   }
 
   .nav-links a {
     text-decoration: none;
-    color: #555;
+    color: #666;
     font-weight: 500;
-    transition: color 0.2s ease;
+    transition: color 0.3s ease;
     position: relative;
   }
 
   .nav-links a:hover {
-    color: #3498db;
+    color: #2c2c2c;
   }
 
   .nav-links a::after {
@@ -63,10 +72,10 @@
     position: absolute;
     width: 0;
     height: 2px;
-    bottom: -4px;
+    bottom: -5px;
     left: 0;
-    background-color: #3498db;
-    transition: width 0.2s ease;
+    background: #f9c51d;
+    transition: width 0.3s ease;
   }
 
   .nav-links a:hover::after {
@@ -75,14 +84,10 @@
 
   @media (max-width: 768px) {
     .nav-links {
-      gap: 20px;
+      display: none;
     }
-
-    .nav-links a {
-      font-size: 14px;
-    }
-
-    .logo h1 {
+    
+    .logo a {
       font-size: 1.3rem;
     }
   }

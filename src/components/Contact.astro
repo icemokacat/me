@@ -1,0 +1,168 @@
+---
+---
+
+<section id="contact" class="section">
+  <div class="container">
+    <h2 class="section-title">Contact</h2>
+    <div class="contact-content">
+      <div class="contact-text">
+        <h3>함께 일하고 싶으시다면</h3>
+        <p>
+          새로운 프로젝트나 협업 기회에 대해 언제든 연락주세요.<br>
+          더 나은 서비스를 만들기 위해 함께 고민하고 싶습니다.
+        </p>
+      </div>
+      
+      <div class="contact-info">
+        <div class="contact-item">
+          <div class="contact-icon">📧</div>
+          <div class="contact-details">
+            <h4>Email</h4>
+            <a href="mailto:backend.dev@example.com">backend.dev@example.com</a>
+          </div>
+        </div>
+        
+        <div class="contact-item">
+          <div class="contact-icon">📝</div>
+          <div class="contact-details">
+            <h4>Blog</h4>
+            <a href="https://backend-dev.tistory.com" target="_blank">backend-dev.tistory.com</a>
+          </div>
+        </div>
+      </div>
+      
+      <div class="contact-cta">
+        <a href="mailto:backend.dev@example.com" class="btn btn-large">이메일 보내기</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <p>&copy; 2024 김백엔드. All rights reserved.</p>
+  </div>
+</footer>
+
+<style>
+  .contact-content {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .contact-text {
+    margin-bottom: 50px;
+  }
+
+  .contact-text h3 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #2c2c2c;
+    margin-bottom: 20px;
+  }
+
+  .contact-text p {
+    font-size: 1.1rem;
+    color: #666;
+    line-height: 1.7;
+  }
+
+  .contact-info {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px;
+    margin-bottom: 50px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .contact-item {
+    background: #f8f9fa;
+    padding: 30px;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+  }
+
+  .contact-item:hover {
+    border-color: #f9c51d;
+    transform: translateY(-5px);
+  }
+
+  .contact-icon {
+    font-size: 2rem;
+    min-width: 50px;
+  }
+
+  .contact-details {
+    text-align: left;
+    flex: 1;
+  }
+
+  .contact-details h4 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #2c2c2c;
+    margin-bottom: 5px;
+  }
+
+  .contact-details a {
+    color: #666;
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: color 0.3s ease;
+  }
+
+  .contact-details a:hover {
+    color: #f9c51d;
+    text-decoration: underline;
+  }
+
+  .contact-cta {
+    margin-top: 20px;
+  }
+
+  .btn-large {
+    padding: 15px 40px;
+    font-size: 1.1rem;
+  }
+
+  .footer {
+    background: #2c2c2c;
+    color: #999;
+    text-align: center;
+    padding: 30px 0;
+    margin-top: 0;
+  }
+
+  .footer p {
+    margin: 0;
+    font-size: 0.9rem;
+  }
+
+  @media (max-width: 768px) {
+    .contact-info {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+    
+    .contact-item {
+      padding: 25px;
+      flex-direction: column;
+      text-align: center;
+    }
+    
+    .contact-details {
+      text-align: center;
+    }
+    
+    .contact-text h3 {
+      font-size: 1.5rem;
+    }
+  }
+</style>

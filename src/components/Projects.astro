@@ -1,0 +1,231 @@
+---
+interface Project {
+  title: string;
+  description: string;
+  period: string;
+  technologies: string[];
+  features: string[];
+  detailUrl?: string;
+}
+
+const projects: Project[] = [
+  {
+    title: "E-commerce 플랫폼",
+    description: "대용량 트래픽을 처리하는 온라인 쇼핑몰 백엔드 시스템",
+    period: "2023.03 - 2023.12",
+    technologies: ["Java", "Spring Boot", "MySQL", "Redis", "AWS", "Docker"],
+    features: [
+      "주문 처리 시스템 성능 300% 향상",
+      "마이크로서비스 아키텍처 적용",
+      "실시간 재고 관리 시스템 구축",
+      "결제 시스템 안정성 개선"
+    ],
+    detailUrl: "./md/ecommerce-platform.md"
+  },
+  {
+    title: "실시간 채팅 서비스",
+    description: "WebSocket을 활용한 실시간 메시징 플랫폼",
+    period: "2022.06 - 2022.11",
+    technologies: ["Node.js", "Socket.io", "MongoDB", "Redis", "Docker"],
+    features: [
+      "실시간 메시지 전송/수신",
+      "파일 첨부 및 이미지 전송",
+      "채팅방 생성 및 관리",
+      "사용자 온라인 상태 표시"
+    ],
+    detailUrl: "./md/chat-service.md"
+  },
+  {
+    title: "데이터 분석 대시보드",
+    description: "비즈니스 인텔리전스를 위한 데이터 시각화 플랫폼",
+    period: "2021.09 - 2022.03",
+    technologies: ["Python", "Django", "PostgreSQL", "Celery", "Chart.js"],
+    features: [
+      "다양한 데이터 소스 연동",
+      "실시간 데이터 처리",
+      "커스텀 차트 생성",
+      "자동 리포트 생성"
+    ],
+    detailUrl: "./md/data-dashboard.md"
+  },
+  {
+    title: "API 게이트웨이",
+    description: "마이크로서비스 환경을 위한 통합 API 관리 시스템",
+    period: "2021.01 - 2021.08",
+    technologies: ["Java", "Spring Cloud Gateway", "Eureka", "Zipkin"],
+    features: [
+      "라우팅 및 로드 밸런싱",
+      "인증 및 권한 관리",
+      "API 요청 제한",
+      "분산 추적 시스템"
+    ],
+    detailUrl: "./md/api-gateway.md"
+  }
+];
+---
+
+<section id="projects" class="section">
+  <div class="container">
+    <h2 class="section-title">Experience</h2>
+    <div class="projects-grid">
+      {projects.map((project) => (
+        <div class="project-card">
+          <div class="project-header">
+            <h3 class="project-title">{project.title}</h3>
+            <span class="project-period">{project.period}</span>
+          </div>
+          <p class="project-description">{project.description}</p>
+          
+          <div class="project-features">
+            <h4>주요 기능</h4>
+            <ul>
+              {project.features.map((feature) => (
+                <li>{feature}</li>
+              ))}
+            </ul>
+          </div>
+          
+          <div class="project-tech">
+            {project.technologies.map((tech) => (
+              <span class="tag">{tech}</span>
+            ))}
+          </div>
+          
+          <div class="project-links">
+            {project.detailUrl && (
+              <a href={project.detailUrl} target="_blank" class="btn btn-sm">상세 경험 보기</a>
+            )}
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .project-card {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    border-top: 4px solid #f9c51d;
+  }
+
+  .project-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  }
+
+  .project-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .project-title {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #2c2c2c;
+    margin: 0;
+  }
+
+  .project-period {
+    color: #666;
+    font-size: 0.9rem;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .project-description {
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 25px;
+  }
+
+  .project-features {
+    margin-bottom: 25px;
+  }
+
+  .project-features h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #2c2c2c;
+    margin-bottom: 12px;
+  }
+
+  .project-features ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .project-features li {
+    color: #666;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin-bottom: 8px;
+    padding-left: 15px;
+    position: relative;
+  }
+
+  .project-features li::before {
+    content: '•';
+    color: #f9c51d;
+    font-weight: bold;
+    position: absolute;
+    left: 0;
+  }
+
+  .project-tech {
+    margin-bottom: 25px;
+  }
+
+  .project-links {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .btn-sm {
+    padding: 8px 20px;
+    font-size: 0.9rem;
+  }
+
+  .btn-outline {
+    background: transparent;
+    color: #2c2c2c;
+    border: 2px solid #f9c51d;
+  }
+
+  .btn-outline:hover {
+    background: #f9c51d;
+    color: #2c2c2c;
+  }
+
+  @media (max-width: 768px) {
+    .projects-grid {
+      grid-template-columns: 1fr;
+      gap: 25px;
+    }
+    
+    .project-card {
+      padding: 25px;
+    }
+    
+    .project-header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+</style>

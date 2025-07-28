@@ -1,0 +1,84 @@
+---
+const skills = [
+  "Java", "Spring Boot", "Python", "Django", "Node.js", 
+  "MySQL", "PostgreSQL", "Redis", "AWS", "Docker", 
+  "Git", "Linux", "RESTful API"
+];
+---
+
+<section id="skills" class="section skills-section" style="background: #f8f9fa;">
+  <div class="container">
+    <h2 class="section-title">Skills</h2>
+    <div class="skills-content">
+      <p class="skills-intro">주로 사용하는 기술 스택입니다</p>
+      <div class="skills-tags">
+        {skills.map((skill) => (
+          <span class="skill-tag">{skill}</span>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .skills-section {
+    padding: 60px 0;
+  }
+
+  .skills-content {
+    max-width: 700px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .skills-intro {
+    font-size: 1rem;
+    color: #666;
+    margin-bottom: 30px;
+  }
+
+  .skills-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+  }
+
+  .skill-tag {
+    background: #f5f5f5;
+    color: #555;
+    padding: 6px 12px;
+    border-radius: 15px;
+    font-size: 13px;
+    font-weight: 400;
+    transition: all 0.2s ease;
+    border: 1px solid #e0e0e0;
+  }
+
+  .skill-tag:hover {
+    background: #f9c51d;
+    color: #2c2c2c;
+    border-color: #f9c51d;
+    transform: translateY(-1px);
+  }
+
+  @media (max-width: 768px) {
+    .skills-section {
+      padding: 40px 0;
+    }
+    
+    .skills-tags {
+      padding: 25px 20px;
+      gap: 6px;
+    }
+    
+    .skill-tag {
+      padding: 5px 10px;
+      font-size: 12px;
+    }
+  }
+</style>

@@ -1,0 +1,219 @@
+---
+interface CareerItem {
+  company: string;
+  position: string;
+  period: string;
+  description: string;
+  achievements: string[];
+}
+
+const career: CareerItem[] = [
+  {
+    company: "테크 스타트업 A",
+    position: "백엔드 개발자",
+    period: "2021.03 - 현재 (3년 4개월)",
+    description: "E-commerce 플랫폼 개발 및 운영을 담당하며, 대용량 트래픽 처리와 시스템 최적화에 기여했습니다.",
+    achievements: [
+      "주문 처리 시스템 성능 300% 향상",
+      "마이크로서비스 아키텍처로 전환하여 서비스 안정성 개선",
+      "실시간 재고 관리 시스템 구축으로 재고 정확도 99.9% 달성",
+      "CI/CD 파이프라인 구축으로 배포 시간 80% 단축"
+    ]
+  },
+  {
+    company: "IT 서비스 회사 B",
+    position: "주니어 백엔드 개발자",
+    period: "2019.02 - 2021.02 (2년)",
+    description: "웹 서비스 개발 및 유지보수를 담당하며, 백엔드 개발 기초를 다졌습니다.",
+    achievements: [
+      "JWT 기반 인증 시스템 구현으로 보안성 강화",
+      "API 문서화 자동화로 개발팀 생산성 30% 향상",
+      "데이터베이스 최적화를 통해 응답 시간 40% 개선",
+      "단위 테스트 도입으로 코드 품질 향상"
+    ]
+  }
+];
+---
+
+<section id="career" class="section" style="background: #f8f9fa;">
+  <div class="container">
+    <h2 class="section-title">Career</h2>
+    <div class="career-timeline">
+      {career.map((item, index) => (
+        <div class="career-item">
+          <div class="career-marker">
+            <div class="marker-dot"></div>
+            {index < career.length - 1 && <div class="marker-line"></div>}
+          </div>
+          <div class="career-content">
+            <div class="career-header">
+              <h3 class="company-name">{item.company}</h3>
+              <span class="career-period">{item.period}</span>
+            </div>
+            <h4 class="position">{item.position}</h4>
+            <p class="career-description">{item.description}</p>
+            <div class="achievements">
+              <h5>주요 성과</h5>
+              <ul>
+                {item.achievements.map((achievement) => (
+                  <li>{achievement}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .career-timeline {
+    max-width: 800px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .career-item {
+    display: flex;
+    margin-bottom: 50px;
+    position: relative;
+  }
+
+  .career-marker {
+    flex-shrink: 0;
+    width: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-right: 30px;
+  }
+
+  .marker-dot {
+    width: 20px;
+    height: 20px;
+    background: #f9c51d;
+    border-radius: 50%;
+    border: 4px solid white;
+    box-shadow: 0 0 0 2px #f9c51d;
+    z-index: 2;
+  }
+
+  .marker-line {
+    width: 2px;
+    height: 100%;
+    background: #e0e0e0;
+    margin-top: 10px;
+    min-height: 150px;
+  }
+
+  .career-content {
+    flex: 1;
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    position: relative;
+  }
+
+  .career-content::before {
+    content: '';
+    position: absolute;
+    left: -10px;
+    top: 25px;
+    width: 0;
+    height: 0;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    border-right: 10px solid white;
+  }
+
+  .career-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .company-name {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #2c2c2c;
+    margin: 0;
+  }
+
+  .career-period {
+    color: #666;
+    font-size: 0.9rem;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .position {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #f9c51d;
+    margin: 0 0 15px 0;
+  }
+
+  .career-description {
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 25px;
+  }
+
+  .achievements h5 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #2c2c2c;
+    margin-bottom: 15px;
+  }
+
+  .achievements ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .achievements li {
+    color: #666;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin-bottom: 10px;
+    padding-left: 20px;
+    position: relative;
+  }
+
+  .achievements li::before {
+    content: '✓';
+    color: #f9c51d;
+    font-weight: bold;
+    position: absolute;
+    left: 0;
+  }
+
+  @media (max-width: 768px) {
+    .career-marker {
+      margin-right: 20px;
+    }
+    
+    .career-content {
+      padding: 25px;
+    }
+    
+    .career-content::before {
+      left: -8px;
+      border-right: 8px solid white;
+    }
+    
+    .career-header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    
+    .company-name {
+      font-size: 1.2rem;
+    }
+  }
+</style>
