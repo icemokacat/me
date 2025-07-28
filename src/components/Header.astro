@@ -1,0 +1,89 @@
+---
+---
+
+<header class="header">
+  <div class="container">
+    <nav class="nav">
+      <div class="logo">
+        <h1>김백엔드</h1>
+      </div>
+      <div class="nav-links">
+        <a href="#profile">프로필</a>
+        <a href="#experience">경험</a>
+        <a href="#contact">연락처</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .header {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid #e8e8e8;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    padding: 16px 0;
+  }
+
+  .nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .logo h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin: 0;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 32px;
+    align-items: center;
+  }
+
+  .nav-links a {
+    text-decoration: none;
+    color: #555;
+    font-weight: 500;
+    transition: color 0.2s ease;
+    position: relative;
+  }
+
+  .nav-links a:hover {
+    color: #3498db;
+  }
+
+  .nav-links a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -4px;
+    left: 0;
+    background-color: #3498db;
+    transition: width 0.2s ease;
+  }
+
+  .nav-links a:hover::after {
+    width: 100%;
+  }
+
+  @media (max-width: 768px) {
+    .nav-links {
+      gap: 20px;
+    }
+
+    .nav-links a {
+      font-size: 14px;
+    }
+
+    .logo h1 {
+      font-size: 1.3rem;
+    }
+  }
+</style>
