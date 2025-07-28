@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 128 128">
+  <path d="m54 118 28 12 28-12v-16l-28 10-28-10v16Z" fill="#fff"/>
+  <path d="M54 102 82 90l28 12v16l-28-10-28 10v-16Z" fill="#16537e"/>
+  <path d="m54 86 28-12 28 12v16l-28-10-28 10V86Z" fill="#4f39fa"/>
+  <path d="m54 70 28-12 28 12v16l-28-10-28 10V70Z" fill="#2f81f7"/>
+  <path d="m54 54 28-12 28 12v16l-28-10-28 10V54Z" fill="#1ec71e"/>
+  <path d="m54 38 28-12 28 12v16l-28-10-28 10V38Z" fill="#ffb900"/>
+  <path d="m54 22 28-12 28 12v16l-28-10-28 10V22Z" fill="#ff6900"/>
+  <path d="m54 6 28-12 28 12v16l-28-10L54 22V6Z" fill="#f74776"/>
+</svg>
