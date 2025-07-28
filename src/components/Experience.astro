@@ -124,8 +124,8 @@ const experiences: BigExperience[] = [
     const smallExpItems = document.querySelectorAll('.small-experience-item');
     
     smallExpItems.forEach(item => {
-      item.addEventListener('click', function() {
-        const experienceIndex = this.getAttribute('data-experience');
+      item.addEventListener('click', () => {
+        const experienceIndex = item.getAttribute('data-experience');
         
         const event = new CustomEvent('openModal', {
           detail: { experienceIndex }
