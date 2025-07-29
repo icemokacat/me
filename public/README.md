@@ -118,7 +118,7 @@ CSS 커스텀 속성 `--accent-color: #f9c51d`를 수정하여 메인 컬러를 
 
 ## 배포
 
-Vercel을 사용한 배포:
+[Vercel](https://vercel.com/)을 사용한 배포:
 
 1. GitHub에 코드 푸시
 2. Vercel과 연결
