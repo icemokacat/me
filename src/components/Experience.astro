@@ -77,18 +77,12 @@ const projects: Project[] = [
           <p class="project-description">{project.description}</p>
           
           <div class="project-features">
-            <h4>주요 기능</h4>
+            <h4>주요 경험</h4>
             <ul>
               {project.features.map((feature) => (
                 <li>{feature}</li>
               ))}
             </ul>
-          </div>
-          
-          <div class="project-tech">
-            {project.technologies.map((tech) => (
-              <span class="tag">{tech}</span>
-            ))}
           </div>
           
           <div class="project-links">
@@ -123,6 +117,9 @@ const projects: Project[] = [
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
     border-top: 4px solid #f9c51d;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
   }
 
   .project-card:hover {
@@ -160,6 +157,7 @@ const projects: Project[] = [
   }
 
   .project-features {
+    flex: 1;
     margin-bottom: 25px;
   }
 
@@ -192,14 +190,11 @@ const projects: Project[] = [
     left: 0;
   }
 
-  .project-tech {
-    margin-bottom: 25px;
-  }
-
   .project-links {
     display: flex;
     gap: 10px;
     flex-wrap: wrap;
+    margin-top: auto;
   }
 
   .btn-sm {
