@@ -1,26 +1,12 @@
-/* ==========================================================================
-   Custom CSS for Portfolio Modal
-   ========================================================================== */
-
-/* 포트폴리오 테마에 맞는 GitHub 마크다운 커스터마이징 */
-.modal-content .markdown-body a {
-  color: #f9c51d;
-}
-
-.modal-content .markdown-body a:hover {
-  color: #e6b41a;
-}
 
 /* 코드 블록 좌측 강조선 */
 .modal-content .markdown-body pre {
   border-left: 4px solid #f9c51d;
+  color: #fff;
+  background-color: #2d2f32;
 }
 
 /* 인용문 좌측 강조선 */
 .modal-content .markdown-body blockquote {
   border-left: 4px solid #f9c51d;
 }
-
-/* ==========================================================================
-   여기에 추가 커스텀 스타일을 작성하세요
-   ========================================================================== */
