@@ -1,10 +1,10 @@
 # Portfolio Site
 
-Astro와 Claude CLI를 활용해 만든 현대적인 포트폴리오 웹사이트입니다.
+Astro와 Claude CLI를 활용해 만든 포트폴리오 웹사이트입니다.
 
 ## 기술 스택
 
-- **Frontend**: Astro 5.12.3
+- **Frontend**: Astro 5.12.3, NodeJS
 - **언어**: TypeScript, HTML, CSS
 - **스타일링**: GitHub Markdown CSS, Pretendard 폰트
 - **개발 도구**: Claude CLI, VSCODE
