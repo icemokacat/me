@@ -29,6 +29,15 @@
           </div>
         </div>
       </div>
+      
+      <div class="project-info">
+        <button 
+          class="btn btn-outline" 
+          onclick="openExperienceModal('./README.md', '프로젝트 소개')"
+        >
+          📖 이 사이트는 어떻게 만들었나요?
+        </button>
+      </div>
     </div>
   </div>
 </section>
@@ -138,6 +147,17 @@
   .footer p {
     margin: 0;
     font-size: 0.9rem;
+  }
+
+  .project-info {
+    margin-top: 40px;
+  }
+
+  .project-info .btn {
+    padding: 12px 30px;
+    font-size: 1rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
   }
 
   @media (max-width: 768px) {
