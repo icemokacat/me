@@ -34,6 +34,9 @@
       // marked.js를 사용하여 마크다운을 HTML로 변환
       const htmlContent = marked.parse(markdownText);
       modalBody.innerHTML = `<article class="markdown-body">${htmlContent}</article>`;
+      
+      // TOC 링크 클릭 이벤트 처리
+      setupTocLinks();
     } catch (error) {
       modalBody.innerHTML = '<div class="error">파일을 로드할 수 없습니다.</div>';
     }
@@ -44,7 +47,46 @@
     const modal = document.getElementById('experience-modal');
     modal.style.display = 'none';
     document.body.style.overflow = 'auto';
+    
+    // 모달 닫을 때 스크롤 위치 리셋
+    const modalContent = document.querySelector('.modal-content');
+    if (modalContent) {
+      modalContent.scrollTop = 0;
+    }
   };
+  
+  // TOC 링크 설정 함수
+  function setupTocLinks() {
+    const modalContent = document.querySelector('.modal-content');
+    const tocLinks = modalContent.querySelectorAll('a[href^="#"]');
+    
+    tocLinks.forEach(link => {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        const targetId = this.getAttribute('href').substring(1);
+        // URL 디코딩 처리
+        const decodedTargetId = decodeURIComponent(targetId);
+        
+        // CSS 이스케이프 처리 (특수문자 이스케이프)
+        const escapedId = CSS.escape(decodedTargetId);
+        const targetElement = modalContent.querySelector(`#${escapedId}`);
+        
+        if (targetElement) {
+          // 모달 내에서 스크롤 이동
+          targetElement.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+          
+          // 약간의 오프셋 추가 (헤더 여백 고려)
+          setTimeout(() => {
+            modalContent.scrollTop -= 20;
+          }, 300);
+        }
+      });
+    });
+  }
   
   // marked.js 설정 (GitHub Flavored Markdown 사용)
   if (typeof marked !== 'undefined') {
@@ -55,6 +97,22 @@
       smartLists: true,
       smartypants: false
     });
+    
+    // 커스텀 renderer로 헤딩에 ID 추가
+    const renderer = new marked.Renderer();
+    renderer.heading = function(text, level) {
+      // 텍스트에서 HTML 태그 제거하고 ID로 사용할 수 있는 형태로 변환
+      const escapedText = text.toLowerCase()
+        .replace(/<[^>]*>/g, '')  // HTML 태그 제거
+        .replace(/[^\w가-힣\s-]/g, '')  // 특수문자 제거 (한글 포함)
+        .replace(/\s+/g, '-')  // 공백을 하이픈으로
+        .replace(/-+/g, '-')   // 연속 하이픈 제거
+        .replace(/^-|-$/g, ''); // 시작/끝 하이픈 제거
+      
+      return `<h${level} id="${escapedText}">${text}</h${level}>`;
+    };
+    
+    marked.use({ renderer });
   }
   
   // 모달 외부 클릭 시 닫기
@@ -90,9 +148,9 @@
   
   .modal-container {
     background: white;
-    width: 900px;
-    max-width: 100%;
-    max-height: 90vh;
+    width: 1000px;
+    max-width: 95%;
+    max-height: 85vh;
     border-radius: 15px;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
     display: flex;
@@ -142,6 +200,7 @@
     padding: 30px;
     overflow-y: auto;
     flex: 1;
+    scroll-behavior: smooth;
   }
   
   /* GitHub Markdown CSS 적용을 위한 기본 설정 */
