@@ -8,7 +8,7 @@
 - [Springbatch를 이용한 Elasticsearch 데이터 증분 색인 처리](#springbatch%EB%A5%BC-%EC%9D%B4%EC%9A%A9%ED%95%9C-elasticsearch-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A6%9D%EB%B6%84-%EC%83%89%EC%9D%B8-%EC%B2%98%EB%A6%AC)
 
 ## Jenkins를 이용한 CI/CD 파이프라인 구축
-
+---
 ### 1. 기존 통합,빌드,배포 과정
  a. local 환경에서 단일 branch 에 commit
  
@@ -21,8 +21,8 @@ a. Environment Inconsistency (환경 불일치)
   - 특정 개발자 환경에 의존하고, 빌드하는 개발자의 환경마다 build 오류가 발생할 수 있다.
  
 b. Single Source of Truth 원칙 위배
-  - Information Asymmetry(정보비대칭) : 배포한 개발자만 정확한 상태를 알고 있어, 다른 팀원들은 배포 version에 대해 추측만 가능하다.
-  - 이로 인해 중복 배포의 위험이 있어, 일관된 서비스를 유지하기 어렵다.
+    - Information Asymmetry(정보비대칭) : 배포한 개발자만 정확한 상태를 알고 있어, 다른 팀원들은 배포 version에 대해 추측만 가능하다.
+    - 이로 인해 중복 배포의 위험이 있어, 일관된 서비스를 유지하기 어렵다.
  
 c. Development Workflow Inefficiency (개발 워크플로우 비효율성)
   - 개발자가 빌드/배포 작업에 시간 소모
@@ -47,11 +47,18 @@ d. Quality Gate Absence (품질 게이트 부재)
 
 - 이 과정을 모두 자동화 한다.
     - 테스트,빌드,배포 하는 과정 시간을 줄여 개발 집중도를 높인다.
-    - 
 
 ### 4. 어떤 방식으로 구축하나
 
+#### 통합과정 전환
 
+ [Git 기반 협업 체계 고도화](https://github.com/icemokacat/me/blob/release/public/md/exp2.md)
+
+#### Jenkins Multibranch Pipeline 이용한 도서관별 CI/CD
+
+![multibranch pipeline](https://github.com/user-attachments/assets/e4b287bb-4d74-42fd-9035-7344519a159a)
+
+![multibranch pipeline](/image/multipipeline.png)
 
 ## 데이터 마이그레이션 시스템 설계
 
