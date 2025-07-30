@@ -56,9 +56,8 @@ d. Quality Gate Absence (품질 게이트 부재)
 
 #### Jenkins Multibranch Pipeline 이용한 도서관별 CI/CD
 
-![multibranch pipeline](https://github.com/user-attachments/assets/e4b287bb-4d74-42fd-9035-7344519a159a)
+![multibranch pipeline]([https://github.com/user-attachments/assets/e4b287bb-4d74-42fd-9035-7344519a159a](https://github.com/user-attachments/assets/b9d61fa9-02ea-4419-a9a5-6d09669c46bc))
 
-![multibranch pipeline](/image/multipipeline.png)
 
 ## 데이터 마이그레이션 시스템 설계
 
