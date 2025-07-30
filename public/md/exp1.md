@@ -54,10 +54,22 @@ d. Quality Gate Absence (품질 게이트 부재)
 
  [Git 기반 협업 체계 고도화](https://github.com/icemokacat/me/blob/release/public/md/exp2.md)
 
-#### Jenkins Multibranch Pipeline 이용한 도서관별 CI/CD
+#### Jenkins Multibranch Pipeline 이용한 도서관별 배포
 
-![multibranch pipeline]([https://github.com/user-attachments/assets/e4b287bb-4d74-42fd-9035-7344519a159a](https://github.com/user-attachments/assets/b9d61fa9-02ea-4419-a9a5-6d09669c46bc))
+![multibranch pipeline](https://github.com/user-attachments/assets/8e09ef3b-78d0-4bfb-b2ee-ea9c7197eaae)
 
+각 지역 도서관별로 분기된 branch 를 개별로 가져올 수 있게 `Multibranch Pipeline` 프로젝트로 생성하여,
+`release` prefix 가 붙은 branch 를 전부 불러와 해당 젠킨스 아이템 하위로 가져오게 한다.
+이후 각 도서관별 젠킨스 item을 별도로 생성한다.
+
+![build trigger](https://github.com/user-attachments/assets/10c5304d-8af1-423d-97f3-481fe87a69ba)
+
+`build trigger` 를 이용하여 특정 branch 에 push 가 되면 해당 pipeline 을 가져와 빌드 후
+원격지 서버에 배포 한다.
+
+![jenkinsslack](https://github.com/user-attachments/assets/2e172981-3dd2-46af-abe5-a02af9a9e1d2)
+
+배포결과를 모두가 알 수 있게, slack 채널에 notifty 한다.
 
 ## 데이터 마이그레이션 시스템 설계
 
