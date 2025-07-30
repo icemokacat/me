@@ -8,7 +8,7 @@
 - [Springbatch를 이용한 Elasticsearch 데이터 증분 색인 처리](#springbatch%EB%A5%BC-%EC%9D%B4%EC%9A%A9%ED%95%9C-elasticsearch-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A6%9D%EB%B6%84-%EC%83%89%EC%9D%B8-%EC%B2%98%EB%A6%AC)
 
 ## Jenkins를 이용한 CI/CD 파이프라인 구축
----
+
 ### 1. 기존 통합,빌드,배포 과정
  a. local 환경에서 단일 branch 에 commit
  
@@ -21,8 +21,8 @@ a. Environment Inconsistency (환경 불일치)
   - 특정 개발자 환경에 의존하고, 빌드하는 개발자의 환경마다 build 오류가 발생할 수 있다.
  
 b. Single Source of Truth 원칙 위배
-    - Information Asymmetry(정보비대칭) : 배포한 개발자만 정확한 상태를 알고 있어, 다른 팀원들은 배포 version에 대해 추측만 가능하다.
-    - 이로 인해 중복 배포의 위험이 있어, 일관된 서비스를 유지하기 어렵다.
+  - Information Asymmetry(정보비대칭) : 배포한 개발자만 정확한 상태를 알고 있어, 다른 팀원들은 배포 version에 대해 추측만 가능하다.
+  - 이로 인해 중복 배포의 위험이 있어, 일관된 서비스를 유지하기 어렵다.
  
 c. Development Workflow Inefficiency (개발 워크플로우 비효율성)
   - 개발자가 빌드/배포 작업에 시간 소모
@@ -54,11 +54,40 @@ d. Quality Gate Absence (품질 게이트 부재)
 
  [Git 기반 협업 체계 고도화](https://github.com/icemokacat/me/blob/release/public/md/exp2.md)
 
-#### Jenkins Multibranch Pipeline 이용한 도서관별 CI/CD
+#### Jenkins Multibranch Pipeline 이용한 도서관별 배포
 
-![multibranch pipeline](https://github.com/user-attachments/assets/e4b287bb-4d74-42fd-9035-7344519a159a)
+![multibranch pipeline](https://github.com/user-attachments/assets/8e09ef3b-78d0-4bfb-b2ee-ea9c7197eaae)
 
-![multibranch pipeline](image/multipipeline.png)
+각 지역 도서관별로 분기된 branch 를 개별로 가져올 수 있게 `Multibranch Pipeline` 프로젝트로 생성하여
+
+`release` prefix 가 붙은 branch 를 전부 불러와 해당 젠킨스 아이템 하위로 가져오게 한다.
+
+이후 각 도서관별 젠킨스 item을 별도로 생성한다.
+
+![build trigger](https://github.com/user-attachments/assets/10c5304d-8af1-423d-97f3-481fe87a69ba)
+
+`build trigger` 를 이용하여 특정 branch 에 push 가 되면 해당 pipeline 을 가져와 빌드 후
+
+원격지 서버에 배포 한다.
+
+![jenkinsslack](https://github.com/user-attachments/assets/2e172981-3dd2-46af-abe5-a02af9a9e1d2)
+
+배포결과를 모두가 알 수 있게, slack 채널에 notifty 한다.
+
+### 5. 결과와 아쉬운 점
+
+- ✅ 생산성 향상
+    - 배포에 들어가는 시간 감소, 코어 개발에 집중 가능
+    - multibranch pipe 로 인한 도서관별 version 추적 가능
+    - 배포에 대한 관한 비대칭 대폭 감소
+    
+- ❌ CI/CD 과정 중 일부 과정 누락 
+    - CI 이전, Deploy 이전 테스트 프로세스 누락
+        - TDD 및 테스트 코드 작성에 관한 경험 부족으로, 기존 운영단에 반영하지 못함.
+        - 초기에 Github action 을 연동하여, deploy 이전 chatgpt 코드리뷰를 연동하였으나 환경변경 등의 이유로 제외.
+        
+- ❌ rolling 혹은 Green/Blud 배포의 부재 
+    - 이중화 관리를 하여 무중단 배포까지 구현했으면 더욱 안정적인 서비스를 할 수 있을것 같다.
 
 ## 데이터 마이그레이션 시스템 설계
 
