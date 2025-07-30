@@ -58,7 +58,7 @@ d. Quality Gate Absence (품질 게이트 부재)
 
 ![multibranch pipeline](https://github.com/user-attachments/assets/e4b287bb-4d74-42fd-9035-7344519a159a)
 
-![multibranch pipeline](/image/multipipeline.png)
+![multibranch pipeline](image/multipipeline.png)
 
 ## 데이터 마이그레이션 시스템 설계
 
