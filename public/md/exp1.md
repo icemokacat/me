@@ -50,6 +50,9 @@ d. Quality Gate Absence (품질 게이트 부재)
 
 ### 4. 어떤 방식으로 구축하나
 
+#### 구성도
+![](https://github.com/user-attachments/assets/1e9c0261-33f4-4a8a-9153-82b6b0bb02f1)
+
 #### 통합과정 전환
 
  [Git 기반 협업 체계 고도화](https://github.com/icemokacat/me/blob/release/public/md/exp2.md)
