@@ -94,19 +94,14 @@ d. Quality Gate Absence (품질 게이트 부재)
 - ❌ rolling 혹은 Green/Blud 배포의 부재 
     - 이중화 관리를 하여 무중단 배포까지 구현했으면 더욱 안정적인 서비스를 할 수 있을것 같다.
 
+## 레거시 시스템 전환 및 표준화
+
+기존 SI사업 및 내부 서비스 운영 및 유지보수 중인 프로젝트는 SpringFramework + JSP + Jquery 그리고 windows server 내 
+apache httpd 2.4 로 구성되어 있었습니다.
+
+![](https://github.com/user-attachments/assets/24e4a0f8-5bb2-4ff7-8318-03ce04db016b)
+
 ## 데이터 마이그레이션 시스템 설계
-
-dummy data
-dummy data
-dummy datadummy datadummy datadummy datadummy datadummy data
-dummy data
-dummy data
-dummy datadummy datadummy datadummy datadummy datadummy data
-dummy data
-dummy data
-dummy datadummy datadummy datadummy datadummy datadummy data
-
-## Springbatch를 이용한 Elasticsearch 데이터 증분 색인 처리
 
 dummy data
 dummy data
