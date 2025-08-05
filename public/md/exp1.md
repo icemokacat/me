@@ -15,6 +15,8 @@
  b. commit 된 소스를 local 환경에서 war 혹은 jar 로 build
  
  c. 빌드된 파일을 원격지 서버에 직접 업로드 하여 was 서버 수동 재시작
+
+ ![](https://github.com/user-attachments/assets/aea8801b-40a6-45e0-89f5-4f2323a136de](https://github.com/user-attachments/assets/aea8801b-40a6-45e0-89f5-4f2323a136de))
  
 ### 2. 문제점
 a. Environment Inconsistency (환경 불일치)
