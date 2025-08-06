@@ -96,10 +96,28 @@ d. Quality Gate Absence (품질 게이트 부재)
 
 ## 레거시 시스템 전환 및 표준화
 
-기존 SI사업 및 내부 서비스 운영 및 유지보수 중인 프로젝트는 SpringFramework + JSP + Jquery 그리고 windows server 내 
-apache httpd 2.4 로 구성되어 있었습니다.
+기존 SI사업 및 내부 서비스 운영 및 유지보수 중인 프로젝트는 
 
-![](https://github.com/user-attachments/assets/24e4a0f8-5bb2-4ff7-8318-03ce04db016b)
+SpringFramework + JSP + Jquery 그리고 windows server 내 apache httpd 2.4 로 구성되어 있었습니다.
+
+![](https://github.com/user-attachments/assets/b17ab985-2642-4de5-bed6-e0537e7af0c3)
+
+해당 구성을 아래와 같이 변경 추진 하였습니다.
+
+![](https://github.com/user-attachments/assets/4da603d0-9784-4ee4-9dec-e1a48d1050db)
+
+#### 추진 동기
+
+- **기술 생태계 발전**: Spring Boot 생태계의 풍부한 리소스와 커뮤니티 활용
+- **개발 표준화**: 컨테이너화 및 CI/CD 파이프라인 구축을 위한 기반 마련, API 요청/응답 체계 개선
+- **인재 채용 경쟁력**: 최신 기술 스택으로 개발자 유치 및 유지 용이성
+
+  (최신 기술이라기엔 민망하지만 현 구성이 너무 레거시한 아키텍쳐)
+
+#### 개선 사항
+
+
+
 
 ## 데이터 마이그레이션 시스템 설계
 
