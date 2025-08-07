@@ -1,3 +1,6 @@
+💡 혹시 해당 페이지가 잘 안보이거나, 디자인상 이상해 보이나요?
+[링크](https://github.com/icemokacat/me/edit/release/public/md/exp1.md) github 에서 볼 수 있습니다.
+
 # 시스템 아키텍처 & 인프라 구축
 > 시스템을 설계하고 안정적인 개발 환경을 구축한 경험
 
