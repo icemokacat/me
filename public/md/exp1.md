@@ -106,13 +106,13 @@ SpringFramework + JSP + Jquery 그리고 windows server 내 apache httpd 2.4 로
 
 ![](https://github.com/user-attachments/assets/4da603d0-9784-4ee4-9dec-e1a48d1050db)
 
-#### 추진 동기
+### 추진 동기
 
 - **기술 생태계 발전**: Spring Boot 생태계의 풍부한 리소스와 커뮤니티 활용
 - **개발 표준화**: 컨테이너화 및 CI/CD 파이프라인 구축을 위한 기반 마련, API 요청/응답 체계 개선
 - **인재 채용 경쟁력**: 레거시 아키텍쳐 청산으로 개발자 유치 및 유지 용이성
 
-#### 개선 사항
+### 개선 사항
 
 #### ⚡ Backend 와 front end 간 요청/응답 체계 표준화
 
@@ -274,6 +274,32 @@ _defaultHttpErrorHandle: function (response, error, errorCallBack) {
 - 표준 준수: Fetch API 등 웹 표준 기술 활용
 - 타입 안전성: 백엔드 제네릭과 프론트엔드 타입 체크로 런타임 에러 감소
 - 일관성: 모든 API가 동일한 패턴으로 요청/응답 처리
+
+#### ⚡ SpringSecurity 를 통한 보안 설정
+
+#### 기존 문제점
+
+SpringSecurity 없이 filter 를 
+
+- XSS 필터: 기본적인 크로스 사이트 스크립팅 방어만 존재
+- CORS 필터: 단순한 교차 출처 리소스 공유 설정만 적용
+- 인증/인가 부재: 사용자 인증 및 권한 관리 시스템 없음
+- 세션 보안 미흡: 세션 고정 공격, 동시 세션 제어 등 미적용
+
+#### 개선된 보안 체계
+
+**계층별 보안 필터 체인 구성** : Spring Security의 다중 필터 체인 패턴을 적용하여 요청 유형별 맞춤형 보안 정책 구현:
+
+A. 정적 리소스 보안 체인 (Order: 1)
+
+```java
+@Bean
+@Order(1)
+public SecurityFilterChain staticResourceSecurityFilterChain(HttpSecurity http) {
+    // CSS, JS, 이미지 등 정적 리소스는 인증 없이 허용
+    // 성능 최적화를 위해 최소한의 보안 설정만 적용
+}
+```
 
 
 ## 데이터 마이그레이션 시스템 설계
