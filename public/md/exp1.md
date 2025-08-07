@@ -377,15 +377,138 @@ E. 기타
 
 ## 데이터 마이그레이션 시스템 설계
 
-dummy data
-dummy data
-dummy datadummy datadummy datadummy datadummy datadummy data
-dummy data
-dummy data
-dummy datadummy datadummy datadummy datadummy datadummy data
-dummy data
-dummy data
-dummy datadummy datadummy datadummy datadummy datadummy data
-dummy data
-dummy data
-dummy datadummy datadummy datadummy datadummy datadummy data
+- Template Method Pattern을 활용한 커스텀 배치 처리 시스템
+
+### 배경
+
+- 진행중인 SI 사업에서, 기 사용되던 table을 신규로 설계한 table로 데이터 이관작업이 필요.
+- 데이터 검증, 건수확인,무결성 검증, 에러 로깅 등을 위해 별도 프로그램이 필요
+
+> SpringBatch 가 있으나 이때는 숙련도가 부족하여, Spring Framework 기반으로 구성
+
+### 구조
+
+![](https://github.com/user-attachments/assets/48906274-7256-468f-83b2-99a60c177c3f)
+
+Spring migration class 다이어그램
+
+![](https://github.com/user-attachments/assets/f9613e74-39ea-4e03-8bbf-6d18c7f19e1c)
+
+### 상세 흐름
+
+**1. 비동기 REST API로 마이그레이션 시작점 제공**
+   
+```java
+@RequestMapping("/users")
+public CompletableFuture<RestResponse> userMigrationBatch() throws InterruptedException {
+   userMigration.userMigration();
+   return CompletableFuture.completedFuture(RestResponse.OK());
+}
+```
+
+**2. Migration Service Layer**
+
+```java
+public class UserMigration {
+
+   public void userMigration() {
+      (중략)
+      CompletableFuture.runAsync(() -> {
+         for(ThreadRangeInfo threadRangeInfo : threadRangeInfoList){
+            (중략)		
+            log.info("Executors Thread {} 유저 정보 id 가 {} ~ {} 인 데이터를 마이그레이션..",...);
+				
+            UserJob userJob = new UserJob(..params);
+		
+            executorService.submit(userJob);
+         }
+      });
+   }
+}
+```
+ 
+- 전체 데이터 개수 조회 (OLD DB)
+- 스레드 범위 계산 및 분할
+- ExecutorService로 멀티스레드 실행
+
+💡 이때 PK 값을 기준으로, Thread 를 나누니 특정 Thread 에서만 작업이 오래 걸리는 것을 발견하여
+
+확인하니, 중간에 삭제된 회원 등 알 수 없는 이유로 특정 범위에만 회원이 몰려있음을 발견 (ex. 4000~50000번대)
+
+그래서, 총 건수를 확인 후 마이그레이션 이전까지 회원이 급격하게 늘어나지 않음을 확인 후 총 스레드 갯수는 고정 후
+
+각 스레드가 담당할 회원 번호를 배분 해주는 query 를 만든 후 해당 시점에 start, end 를 고정 시켜 실행 하도록 하였다.
+
+
+**3. Template Method Pattern 을 이용한 BatchJob 구현**
+
+💡 일부 코드는 생략되어 있습니다.
+
+- 3.1 Template Method - 전체 실행 흐름 제어
+ 
+```java
+@Override
+public Long call() {
+    JobLoggingDto jobLoggingDto = new JobLoggingDto();
+    Instant start = Instant.now();
+    
+    execute();  // 핵심 실행 로직 호출
+    
+    Instant end = Instant.now();
+    displayTimeLog(prefix, start, end);
+    loggingMapper.loggingMigrationJob(jobLoggingDto);
+    return successCount.get();
+}
+```
+
+- 3.2 Template Method - 3단계 처리 흐름
+```java
+private void execute() {
+    // 1단계: 데이터 조회 (Abstract Method 호출)
+    List<T> oldDataList = selectOldData(this.oldDataBaseData);
+    
+    // 2-3단계: 데이터 변환 및 저장
+    oldDataList.forEach(oldData -> {
+        try {
+            // 2단계: 데이터 변환 (Abstract Method 호출)
+            BaseDto<N> newData = oldToNewData(oldData);
+            
+            // 3단계: 데이터 저장 (Abstract Method 호출)
+            if (newData != null) {
+                int successCnt = saveNewData(newData, loggingDataList);
+                successCount.addAndGet(successCnt);
+            }
+        } catch (ConvertException e) {
+            handleConvertError(e, oldData, loggingDataList);
+        }
+    });
+    
+    // 4단계: 로깅 처리
+    handleLoggingData(loggingDataList);
+}
+```
+
+- 3.3 Abstract Methods - 하위 클래스에서 구현
+```java
+public abstract List<T> selectOldData(BaseDto<?> params);
+protected abstract BaseDto<N> oldToNewData(T oldData) throws ConvertException;
+public abstract int saveNewData(BaseDto<N> newData, List<LoggingData> loggingList);
+```
+
+**4. BatchJob 을 상속받아 각 도메인 혹은 테이블별로 Job을 생성**
+
+- 이전 데이터 조회 구현
+- 새로운 도메인으로 convert 처리
+- 새로운 databasae 로 삽입
+- convert 혹은 오류에 대한 기록 처리
+
+  (실제처리는 batchJob 에서 프로세스가 작성 되었고, 오류사항에 대해 `LoggingRow` 로 생성 후 추가)
+
+### 결과
+
+- 데이터 검증 및 성공/실패에 관한 에러 로깅이 가능하여 (에러도 DB로 수집) , 데이터베이스간 무결성 검증을 할 수 있었음
+- 데이터 범위를 동적으로 분할 후 `ExecutorService` 를 통한 병렬 처리로 대용량 데이터를 처리할 수 있었음
+	- 유저 30만 데이터 대략 2~3분 소요	
+- 실시간으로 진행률 (10% 단위) 추적이 가능
+
+
