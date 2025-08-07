@@ -3,9 +3,9 @@
 
 - [Jenkins를 이용한 CI/CD 파이프라인 구축](#jenkins%EB%A5%BC-%EC%9D%B4%EC%9A%A9%ED%95%9C-cicd-%ED%8C%8C%EC%9D%B4%ED%94%84%EB%9D%BC%EC%9D%B8-%EA%B5%AC%EC%B6%95)
 
-- [데이터 마이그레이션 시스템 설계](#데이터-마이그레이션-시스템-설계)
+- [레거시 시스템 전환 및 표준화](#%EB%A0%88%EA%B1%B0%EC%8B%9C-%EC%8B%9C%EC%8A%A4%ED%85%9C-%EC%A0%84%ED%99%98-%EB%B0%8F-%ED%91%9C%EC%A4%80%ED%99%94)
 
-- [Springbatch를 이용한 Elasticsearch 데이터 증분 색인 처리](#springbatch%EB%A5%BC-%EC%9D%B4%EC%9A%A9%ED%95%9C-elasticsearch-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A6%9D%EB%B6%84-%EC%83%89%EC%9D%B8-%EC%B2%98%EB%A6%AC)
+- [데이터 마이그레이션 시스템 설계](#%EB%8D%B0%EC%9D%B4%ED%84%B0-%EB%A7%88%EC%9D%B4%EA%B7%B8%EB%A0%88%EC%9D%B4%EC%85%98-%EC%8B%9C%EC%8A%A4%ED%85%9C-%EC%84%A4%EA%B3%84)
 
 ## Jenkins를 이용한 CI/CD 파이프라인 구축
 
