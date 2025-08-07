@@ -110,13 +110,170 @@ SpringFramework + JSP + Jquery 그리고 windows server 내 apache httpd 2.4 로
 
 - **기술 생태계 발전**: Spring Boot 생태계의 풍부한 리소스와 커뮤니티 활용
 - **개발 표준화**: 컨테이너화 및 CI/CD 파이프라인 구축을 위한 기반 마련, API 요청/응답 체계 개선
-- **인재 채용 경쟁력**: 최신 기술 스택으로 개발자 유치 및 유지 용이성
-
-  (최신 기술이라기엔 민망하지만 현 구성이 너무 레거시한 아키텍쳐)
+- **인재 채용 경쟁력**: 레거시 아키텍쳐 청산으로 개발자 유치 및 유지 용이성
 
 #### 개선 사항
 
+#### ⚡ Backend 와 front end 간 요청/응답 체계 표준화
 
+> 기존 방식
+
+Backend 예시
+```java
+@RequestMapping(value = "/books", method = RequestMethod.GET)
+public Map<String, Object> getBooks(@RequestParam Map<String, Object> param, HttpServletRequest req) {
+	Map<String, Object> retMap = JsonModel.resultSuccessMap();
+
+	retMap = this.bookService.searchContentsbook(param,req);
+
+	return retMap;
+}
+```
+
+레거시한 에러처리
+```xml
+<!-- web.xml 또는 servlet 설정 -->
+<error-page>
+    <error-code>404</error-code>
+    <location>/error/404.jsp</location>
+</error-page>
+<error-page>
+    <error-code>500</error-code>
+    <location>/error/500.jsp</location>
+</error-page>
+```
+
+Frontend 예시
+```javascript
+$.ajax({
+    url: '/books',
+    type: 'GET',
+    data: {
+        // 검색 파라미터들
+        title: '검색할 제목',
+        author: '작가명',
+        category: '카테고리',
+        page: 1,
+        size: 10
+    },
+    dataType: 'json',
+    success: function(response) {
+        console.log('성공:', response);
+        // 응답 데이터 처리
+        if(response.success) {
+            // 책 목록 표시
+            displayBooks(response.data);
+        } else {
+            alert('검색 실패: ' + response.message);
+        }
+    },
+    error: function(xhr, status, error) {
+        console.error('에러:', error);
+        alert('서버 오류가 발생했습니다.');
+    }
+});
+```
+
+> 문제점
+
+- 타입 안전성 결여: Map<String, Object> 사용으로 컴파일 타임 검증 불가
+- 에러 처리 미흡: 표준화된 에러 응답 형식 없음 (servlet 내의 error-page redirect 설정으로만 처리)
+
+> 변경사항
+
+**🗃Backend**
+
+Backend 에서의 `org.springframework.http.ResponseEntity` 를 확장한 `RestResponse` 객체 생성 
+```java
+public class RestResponse extends ResponseEntity<RestResponseBody<?>>
+```
+
+Body 부를 새로 만든 `RestResponseBody<T>` 로 지정하여 응답 인터페이스를 일치
+```java
+@Data
+@Builder
+public class RestResponseBody<T> {
+	private String code;
+	private String message;
+	private Pagination pagination;
+	private T result;
+}
+```
+
+API 에러 핸들링 개선
+```java
+@Slf4j
+@Order(GeneralRestControllerAdvice.ORDER+1)
+@ControllerAdvice(annotations = Controller.class)
+@RequiredArgsConstructor
+public class GeneralPageControllerAdvice {
+    // 전통적인 MVC 페이지 전용 에러 처리 로직
+}
+```
+```java
+@Slf4j
+@Order(GeneralRestControllerAdvice.ORDER)
+@RestControllerAdvice(annotations = RestController.class)
+public class GeneralRestControllerAdvice {
+    // REST API 전용 에러 처리 로직
+    // 이때 에러에 대한 응답에서도 RestResponse 객체 재사용 하여 응답 표준화
+}
+```
+- 기존에 존재하지 않던 API 에러처리에 대해 `GeneralRestControllerAdvice` 로 핸들링
+- 관심사 분리
+    - API 에러: JSON 응답으로 프론트엔드에서 처리
+    - 페이지 에러: 사용자 친화적인 에러 페이지 표시
+
+
+**📺Front end**
+
+> 팀내 프론트엔드 개발자가 별도로 존재 하지 않고, 서비스와 화면을 모두 담당했어야 했습니다.
+
+- Jquery 라이브러리 버전에 대한 의존도
+- 라이브러리 버전에 따른 보안 이슈에 대한 업데이트 대응 (폐쇄망 등에 설치된 서비스에 대한 업데이트 대응의 어려움)
+
+등의 이유와 현대적인 frontend 트렌드와 jquery는 맞지 않으며, ReactJS 를 바로 도입하기엔 일정 및 숙련도의 이슈가 있었기에
+
+중간 단계로, 순수 javascript 를 통해 공통단 js 들을 작성하였음
+
+Front end 단 API 담당 스크립트 개발 [apicommon.js gist](https://gist.github.com/icemokacat/fa9f4d215a98c61c75bff261e5e7d378)
+```javascript
+// jQuery 의존성 제거하고 fetch API 기반으로 구현
+custom.api.request.post({
+    url: '/books',
+    data: { title: 'example' }
+}, successCallback, errorCallback);
+// 요청시 예시
+(중략)
+response = await fetch(url, option);
+```
+
+통합 에러 핸들링
+```javascript
+_defaultHttpErrorHandle: function (response, error, errorCallBack) {
+    let errorMsg;
+    
+    // HTTP 상태 코드별 표준화된 에러 처리
+    if (response.status === 400) {
+        if(error['fieldErrors']) {
+            errorMsg = custom.api._get400ErrorMsg(error['fieldErrors']);
+        } else if(error.message) {
+            errorMsg = error.message;
+        } else {
+            errorMsg = '잘못된 요청입니다.';
+        }
+    }
+    // 401, 403, 500 등 다른 상태 코드들도 표준화된 처리
+}
+```
+
+> 결과
+
+- 코드 중복 제거: 공통 에러 처리 로직을 한 곳에서 관리
+- 개발 표준화: 팀 내 일관된 API 통신 패턴 확립
+- 표준 준수: Fetch API 등 웹 표준 기술 활용
+- 타입 안전성: 백엔드 제네릭과 프론트엔드 타입 체크로 런타임 에러 감소
+- 일관성: 모든 API가 동일한 패턴으로 요청/응답 처리
 
 
 ## 데이터 마이그레이션 시스템 설계
