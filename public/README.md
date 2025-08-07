@@ -2,6 +2,8 @@
 
 Astro와 Claude CLI를 활용해 만든 포트폴리오 웹사이트입니다.
 
+Git 주소 [https://github.com/icemokacat/me](https://github.com/icemokacat/me)
+
 ## 기술 스택
 
 - **Frontend**: Astro 5.12.3, NodeJS
@@ -62,7 +64,7 @@ portfolio-site/
 
 ## 시작하기
 
-### 1. 프로젝트 복제
+### 1. 프로젝트 복제 (fork 후 자신의 repository 주소)
 
 ```bash
 git clone <repository-url>
