@@ -279,7 +279,7 @@ _defaultHttpErrorHandle: function (response, error, errorCallBack) {
 
 #### 기존 문제점
 
-SpringSecurity 없이 filter 를 
+SpringSecurity 없이 filter 만으로 보안 처리
 
 - XSS 필터: 기본적인 크로스 사이트 스크립팅 방어만 존재
 - CORS 필터: 단순한 교차 출처 리소스 공유 설정만 적용
@@ -288,9 +288,9 @@ SpringSecurity 없이 filter 를
 
 #### 개선된 보안 체계
 
-**계층별 보안 필터 체인 구성** : Spring Security의 다중 필터 체인 패턴을 적용하여 요청 유형별 맞춤형 보안 정책 구현:
+A. 계층별 보안 필터 체인 구성
 
-A. 정적 리소스 보안 체인 (Order: 1)
+Spring Security의 다중 필터 체인 패턴을 적용하여 요청 유형별 맞춤형 보안 정책 구현
 
 ```java
 @Bean
@@ -299,8 +299,81 @@ public SecurityFilterChain staticResourceSecurityFilterChain(HttpSecurity http) 
     // CSS, JS, 이미지 등 정적 리소스는 인증 없이 허용
     // 성능 최적화를 위해 최소한의 보안 설정만 적용
 }
+@Bean
+@Order(2)
+public SecurityFilterChain apiSecurityFilterChain(HttpSecurity http) {
+    // API 전용 인증/인가 정책
+    // JSON 기반 에러 응답
+    // 동적 권한 관리 적용
+}
+@Bean
+@Order(3)
+public SecurityFilterChain securityFilterChain(HttpSecurity http) {
+    // 전통적인 웹 페이지 보안
+    // 폼 기반 인증
+    // 페이지 리다이렉트 방식 처리
+}
 ```
 
+B. 동적 권한 관리 시스템
+```java
+.anyRequest().access(dynamicAuthorizationManager)
+```
+
+dynamicAuthorizationManager 일부
+```java
+public class DynamicAuthorizationManager  implements AuthorizationManager<RequestAuthorizationContext> {
+ (중략)
+ @Override
+ public AuthorizationResult authorize(Supplier<Authentication> authenticationSupplier, RequestAuthorizationContext context) {
+	for (APIAccessRules rule : RULES) {
+		(중략)
+		return new AuthorizationDecision(hasRole);
+	}
+ }
+}
+```
+
+C. 세션 보안 강화
+
+예시입니다.
+```java
+.sessionManagement(session -> session
+    .sessionFixation().migrateSession()    // 세션 고정 공격 방어
+    .maximumSessions(3)                    // 동시 세션 수 제한
+    .maxSessionsPreventsLogin(true)        // 동시 로그인 차단
+)
+```
+
+D. 예외처리
+```java
+// API 요청: JSON 에러 응답
+.exceptionHandling(exception -> {
+    exception.accessDeniedHandler(restAccessDeniedHandler);
+    exception.authenticationEntryPoint(restAuthenticationEntryPoint);
+});
+
+// 페이지 요청: 사용자 친화적 페이지 응답
+.exceptionHandling(exception -> {
+    exception.accessDeniedHandler(pageAccessDeniedHandler());
+    exception.authenticationEntryPoint(pageAuthenticationEntryPoint());
+});
+```
+
+E. 기타
+
+- XOR 기반 CSRF 토큰처리
+- XSS, CORS 에 대한 처리
+
+#### ⚡ 이외의 개선사항
+
+- 단일 파일로 관리되던 log 파일 profile (배포환경)에 따른 로깅 정책 분리, 시간 기반 롤링 정책
+- JSP 기반 view 에서 Thymeleaf 으로 렌더링 엔진 변경 주도 (layout 설계 등)
+- windows 운영서버 -> Linux 서버 전환
+- 기존 업로드된 이미지 파일 Tomcat 에서 관리 -> Nginx 에서 직접 반환
+- 직접 검증하는 유효성 체크 방식 (Service Layer에서 직접 체크) 을 도메인별 Validator 클래스로 분리하고,
+
+  Global Exception Handler와 연동하여 일관된 에러 응답 체계를 구축
 
 ## 데이터 마이그레이션 시스템 설계
 
