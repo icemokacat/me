@@ -511,4 +511,12 @@ public abstract int saveNewData(BaseDto<N> newData, List<LoggingData> loggingLis
 	- 유저 30만 데이터 대략 2~3분 소요	
 - 실시간으로 진행률 (10% 단위) 추적이 가능
 
+🔥 개선할 수 있는 점
+
+- error 수집을 kafka 로 비동기 전송을 했더라면, 성능이 개선 되었을 것
+
+  (일회성 프로젝트 였기 때문에, 설정의 복잡도 및 일정의 이유로 도입하지 않았습니다.)
+  
+- Springbatch 를 이용하였으면, 트랜잭션 및 에러 복구가 가능했고 상세한 모니터링이 가능했을 것
+
 
