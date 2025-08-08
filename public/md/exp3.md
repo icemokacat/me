@@ -11,4 +11,7 @@
 
 ## Notion 기반 지식 공유 체계 구축
 
+![](https://github.com/user-attachments/assets/edb0b761-ed30-405f-a383-b5db5421626e)
+
 ## API 명세서 자동화 시스템 구축
+
