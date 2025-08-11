@@ -23,8 +23,6 @@ HttpURLConnection connection = (HttpURLConnection) url.openConnection();
     - 재사용 가능한 구조로 만들기 힘들고, 테스트 시 Mock 구성도 번거로움
 - 타임아웃/에러 처리 한계
     - 세분화된 예외 처리 및 설정이 어렵고 복잡함
-- 멀티파트, 인증, JSON 직렬화/역직렬화 작업 수동
-    - JSON 변환, 파일 업로드 등에서 외부 라이브러리와 별도로 결합해야 함
 
 ### RestTemplate 기반 client 로 전환
 
@@ -139,29 +137,31 @@ public class AladinService extends AladinClient {
     }
 
     private String handleResponse(ResponseEntity<String> response) {
-        // response 결과 값에 대한 정리 (특수문자 처리 등)
+        // response 결과 값에 대한 정리 (MediaType 확인 및 특수문자 처리 등)
     }
 
     private <T> T parsingData(String data, Class<T> responseType){
-		ObjectMapper mapper = new ObjectMapper();
-		T result = null;
-		try {
-			// https://stackoverflow.com/questions/31537153/jsonparseexception-illegal-unquoted-character-ctrl-char-code-10
-			// 리턴 데이터 중 특수문자가 들어가는 경우가 있어서
-			// 특수문자 허용
-			mapper.configure(JsonReadFeature.ALLOW_UNESCAPED_CONTROL_CHARS.mappedFeature(), true);
-			// 백슬래시를 이용한 모든 문자의 이스케이프 처리 허용
-			mapper.configure(JsonParser.Feature.ALLOW_BACKSLASH_ESCAPING_ANY_CHARACTER, true);
-			result = mapper.readValue(data, responseType);
-		} catch (JsonProcessingException e) {
-			log.error("JsonProcessingException error", e);
-		}
-		return result;
+		// object mapper custom 설정 및 dto 변환
 	}
 
 }
 ```
 
+**사용예시**
+
+```java
+// 1. 요청 DTO 생성
+AladinDetailRequest request = AladinDetailRequest.builder()
+    .itemId("123456")
+    .itemIdType("ISBN")
+    .build();
+
+// 2. 서비스 호출 (복잡한 HTTP 통신 로직 숨겨짐)
+AladinResponse response = aladinService.getBookDetail(request);
+
+// 3. 비즈니스 로직에 집중
+List<BookItem> books = response.getItem();
+```
 
 
 # SNS 연동을 통한 사용자 인증
