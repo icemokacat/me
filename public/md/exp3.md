@@ -1,5 +1,5 @@
 💡 혹시 해당 페이지가 잘 안보이거나, 디자인상 이상해 보이나요?
-[링크](https://github.com/icemokacat/me/edit/release/public/md/exp3.md) github 에서 볼 수 있습니다.
+[링크](https://github.com/icemokacat/me/blob/release/public/md/exp3.md) github 에서 볼 수 있습니다.
 
 # 개발 문화 개선 & 협업 체계 구축
 
