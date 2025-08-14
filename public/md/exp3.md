@@ -281,7 +281,102 @@ notion page 하나에서 하기엔, 지속적으로 template 고도화가 필요
 
 ## API 명세서 자동화 시스템 구축
 
+### 추진 동기
 
+기존에는 excel 로 서비스 명세서를 작성하고 있었고, 테스트는 개별로 postman 으로 API 확인을 하였습니다.
+
+엑셀로 작성시 `문서 일관성 부족` , `검색이나 참조의 불편함` 의 단점이 있었고, Postman 역시
+
+이용에는 편리하나, 무료버전의 한계로 버전관리를 하기 힘들다는 점이 있었습니다.
+
+또한 초기에는 swagger 를 도입하였으나, 제품 코드에 영향이 있으며 API 스펙 변경 시
+
+swagger 코드를 수정해야 함으로 관리 포인트가 늘어난다는 점에서 불편한 점이 있었습니다.
+
+### 그래서 어떤게 필요한가
+
+- 회사 특성상 외부 업체 혹은 사내 다른 팀에게 API 문서를 전달해야 하는 일이 종종있다.
+    - API 문서를 만들면 바로 반출해서 전달할 수 있는 기능이 필요
+- 내가 만드는 API 명세가 모두가 명시적으로 알 수 있도록 인지를 할 수 있어야 한다.
+    - 버전관리가 가능해야 한다.
+- 제품코드에 영향을 주지 않으면서, 필요한 경우 바로 수정이 가능해야 한다.
+    - API 명세 자체가 최대한 운영되는 application에 영향을 주지 않아야 한다.
+- 회사내에서 다른 팀도 바로 해당 명세서를 볼 수 있을 것
+    - 별도로 실행하거나 찾을 필요 없이 사이트로 구성
+- 프로젝트별로 폴더화가 가능하고 UI&UX 적으로 구분이 쉬워야 할 것
+    - 바로바로 postman 같이 테스트가 가능해야 할 것
+
+💡 Rest Docs 도 고려 했으나 아직 팀이 TDD 에 대한 숙련도가 있지 않아서 우선 배제되었습니다.
+
+그래서 post man 과 유사한 기능을 제공하는 [bruno](https://www.usebruno.com/) 를 API 도구로 활용하되
+
+위의 요구사항을 충족할 수 있게 아래와 같이 만들기로 하였습니다.
+
+### 구성도
+
+![](https://github.com/user-attachments/assets/979708e8-f556-4c91-aa25-43c6fb3c30e2)
+
+**bruno 간략소개**
+
+![](https://github.com/user-attachments/assets/f0c44e92-58eb-4f78-9a99-fbc61bb6a3ce)
+
+이런 폴더(콜렉션)을 생성하고 해당 폴더들을 `git` 으로 버전관리를 하게 됩니다. 
+
+(해당 기능은 제공하지 않으므로 별도로 설정)
+
+![](https://github.com/user-attachments/assets/4df98c17-c15f-4dc1-bfb6-7de974c01e9f)
+
+이후 상세 문서를 작성 후 `docs` 탭에서 markdown 으로 작성하면 github의 readme 문서처럼 볼 수 있습니다.
+
+### 데이터 흐름
+
+그래서 사용흐름은 아래와 같습니다.
+
+1. bruno client 에서 테스트 및 API 문서를 작성 후 `git` 으로 버전관리 및 CI/CD 를 통해 개발 서버로 전송
+
+2. 전송된 `.bru` 파일을 Springboot 프로젝트에서 탐색 후 반환
+
+3. node js 프로젝트에서 해당 markdown 을 parsing 하여 사용자에게 보여줌
+
+![](https://github.com/user-attachments/assets/eb215934-d585-4e78-9155-945cb6ac72b6)
+
+### 구축 결과 및 예시
+
+백엔드 : Springboot + commonmark [icemokacat/bruno-viewer](https://github.com/icemokacat/bruno-viewer)
+
+프론트엔드 : NodeJS & Express(v4.19.2) [icemokacat/markdown-page-viewer](https://github.com/icemokacat/markdown-page-viewer)
+
+![구축 스크린샷](https://github.com/user-attachments/assets/fc5ce623-45b7-4561-a416-aa36f54b844f)
+
+💡 PDF 다운로드는 [puppeteer](https://github.com/puppeteer/puppeteer) 를 이용하여 서버단에서 
+
+`Headless Chrome` 을 이용하여 custom 한 `css` 를 적절히 적용하여 PDF 반출할 수 있게 만들었습니다.
+
+### 성과 및 아쉬운점
+
+- 문서화 효율성 향상
+    - Excel 기반 수동 작성에서 마크다운 기반 자동화로 전환하여 문서 작성 시간 대폭 단축
+    - Git 버전 관리를 통해 API 변경 이력 추적 및 협업 효율성 증대
+    - 실시간 문서 동기화로 개발자 간 정보 공유 지연 최소화
+
+- 운영 환경 안정성 확보
+    - 기존 Swagger 대비 코드 침투성 없이 API 문서 관리 가능
+    - 별도 인프라에서 운영되어 메인 서비스 성능에 무영향
+
+- 사용자 경험 개선
+    - 웹 기반 통합 인터페이스로 팀 내외 접근성 향상
+    - PDF 다운로드 기능으로 외부 업체/타팀 전달 프로세스 간소화
+    - Bruno의 Postman 유사 UI로 기존 사용자들의 학습 곡선 최소화
+ 
+🔥 초기 구축 후 잘 사용했으나, 해당 프로그램 자체도 유지보수를 해야 함과
+
+수시로 변경되는 프로젝트 기능 및 오류 수정에 대한 기한 마감의 문제
+
+당시 framework 전환 및 커뮤니케이션 툴 전환 등 전환점이 많아
+
+팀원들의 피로도가 올라가 있는 상태였기 때문에 끝까지 활성화 되지는 못하였습니다.
+
+사실은 PostMan 유료버전이 지원되고 TDD 의 숙련도를 올려서 Rest Docs 와 함께 사용하는 것이 더 좋을 것 같습니다.
 
 
 
