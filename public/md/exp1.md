@@ -60,7 +60,7 @@ d. Quality Gate Absence (품질 게이트 부재)
 
 #### 통합과정 전환
 
- [Git 기반 협업 체계 고도화](https://github.com/icemokacat/me/blob/release/public/md/exp2.md)
+ [Git 기반 협업 체계 고도화](https://github.com/icemokacat/me/blob/release/public/md/exp3.md#git-%EA%B8%B0%EB%B0%98-%ED%98%91%EC%97%85-%EC%B2%B4%EA%B3%84-%EA%B3%A0%EB%8F%84%ED%99%94)
 
 #### Jenkins Multibranch Pipeline 이용한 도서관별 배포
 
