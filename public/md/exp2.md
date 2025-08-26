@@ -1,7 +1,16 @@
 💡 혹시 해당 페이지가 잘 안보이거나, 디자인상 이상해 보이나요?
 [링크](https://github.com/icemokacat/me/blob/release/public/md/exp2.md) github 에서 볼 수 있습니다.
 
+- [Http Client 개선](#http-client-%EA%B0%9C%EC%84%A0)
+- [SNS 연동을 통한 사용자 인증](#sns-%EC%97%B0%EB%8F%99%EC%9D%84-%ED%86%B5%ED%95%9C-%EC%82%AC%EC%9A%A9%EC%9E%90-%EC%9D%B8%EC%A6%9D)
+- [타사 제공 SSO 및 OTP 연동](#%ED%83%80%EC%82%AC-%EC%A0%9C%EA%B3%B5-sso-%EB%B0%8F-otp-%EC%97%B0%EB%8F%99)
+- [KMC, 이니시스 본인인증 API 연동](#kmc-%EC%9D%B4%EB%8B%88%EC%8B%9C%EC%8A%A4-%EB%B3%B8%EC%9D%B8%EC%9D%B8%EC%A6%9D-api-%EC%97%B0%EB%8F%99)
+
 # Http Client 개선
+
+SNS 연동 및 본인인증 API 연동, 학술정보 검색, 장애인도서관 자료 검색 등
+
+다양한 API 연동을 위해 먼저 Http Client 를 개선하였습니다.
 
 ### 기존 API 요청 방식
 
@@ -162,7 +171,6 @@ AladinResponse response = aladinService.getBookDetail(request);
 // 3. 비즈니스 로직에 집중
 List<BookItem> books = response.getItem();
 ```
-
 
 # SNS 연동을 통한 사용자 인증
 
