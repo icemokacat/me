@@ -5,8 +5,6 @@
 
 - [Springbatch를 이용한 Elasticsearch 데이터 증분 색인 처리](#springbatch%EB%A5%BC-%EC%9D%B4%EC%9A%A9%ED%95%9C-elasticsearch-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A6%9D%EB%B6%84-%EC%83%89%EC%9D%B8-%EC%B2%98%EB%A6%AC)
 
-- [기타 프로세스 개선](#%EA%B8%B0%ED%83%80-%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4-%EA%B0%9C%EC%84%A0)
-
 # CI/CD 폐쇄망 환경 대응 방안
 
 ### 문제점
@@ -195,10 +193,3 @@ files.sort(key=lambda x: x[1], reverse=True)  # mtime 기준 최신순
 - Elastic Document 로 변환
 
 - `springframework.data.elasticsearch.repository` 를 통해 save
-
-# 기타 프로세스 개선
-
-
-
-
-
