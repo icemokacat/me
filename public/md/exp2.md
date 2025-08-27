@@ -297,16 +297,134 @@ if (TokenUtils.isValidToken(token)) {
 
 # KMC, 이니시스 본인인증 API 연동
 
-#### 개발시 API 문서를 참고하여 흐름도를 작성
+#### System Architecture & Data Flow Diagram
 
-일부 프로세스 예시.
+- API 문서를 참고하여 흐름도를 작성
 
-<img width="1323" height="533" alt="image" src="https://github.com/user-attachments/assets/6027d2e3-3cbf-40ca-9d08-c3fb46665a3f" />
+![](https://github.com/user-attachments/assets/6027d2e3-3cbf-40ca-9d08-c3fb46665a3f)
 
-#### 공통 JS 작성 및 
 
-회원가입, 아이디 찾기, 재인증 다양한 페이지에서 활용될 수 있도록 팝업 요청 스크립트를 분리 `authme.js`
+- 백엔드 프론트 역할을 구분하여 설계
 
-<img width="855" height="646" alt="image" src="https://github.com/user-attachments/assets/a6fcfece-04ab-44fb-bbd1-bd1fcb366fda" />
+![](https://github.com/user-attachments/assets/db663030-571b-402d-893b-617b956695fc)
 
+
+#### 특징
+
+- 회원가입, 계정 찾기, 재인증 등 다양한 페이지에서 동일하게 사용할 수 있도록 스크립트 모듈화 (재사용성)
+
+```javascript
+let authme = {
+	inicis : {
+        urls : {
+            initCallURL : "sa.inicis.com/auth",
+            getEncRequestParam : "/api/users/certification/sns",
+            getInicisCertResult : "/api/users/certification/sns/result"
+        },
+        consts : {
+            formId : 'inicisCertFrm',
+            popTargetName : 'sa_popup',
+            saSubmitBtnId : 'saSubmitBtn',
+        },
+		/****************************************
+         * @namespace authme.inicis.popupOpen
+         * @param params (인증 요청 파라미터)
+         *  - flgFixedUser (특정 사용자 고정값 : Y, 보통의 경우 사용할 일 없음)
+         *  - userName (이름, flgFixedUser 가 Y 일 경우 필수)
+         *  - userPhone (휴대폰 번호, flgFixedUser 가 Y 일 경우 필수)
+         *  - userBirth (생년월일, flgFixedUser 가 Y 일 경우 필수)
+         *  - returnObjId (결과값 전달 받을 부모창의 input id)
+         * @description KMC 본인 인증 팝업 오픈
+         ******************************************/
+        popupOpen : function (params) {
+            authme.inicis.action.init();
+            let _mobileYn = params['mobileYn'] || 'N';
+            authme.inicis.api.getEncRequestParam(params, function (resData){
+				(코드생략)
+			}
+		}
+}
+```
+
+필요한 페이지에서 해당 스크립트 함수를 호출
+```javascript
+inicisPopBtn.addEventListener('click', () => {
+	if(isMobile){
+		(코드생략)
+		authme.inicis.popupOpen(_callParams);
+	}else{
+		(코드생략)
+		authme.inicis.popupOpen(_callParams);
+	}
+});
+```
+
+- 필수와 선택값에 대한 분리 및 관심사 분리
+
+```java
+InicisAuthRequest.Builder inicisAuthRequestBuilder = new InicisAuthRequest.Builder(
+	InicisInfo.API_KEY,
+	InicisInfo.MID,
+	requestType,
+	mxTid,
+	SUCCESS_RETURN_URL,
+	FAIL_RETURN_URL,
+	inicisInitCall.getFlgFixedUser()
+);
+// 특정 인증사 노출 옵션
+String directAgency = inicisInitCall.getDirectAgency();
+if(!EcoStringUtil.isEmpty(directAgency)){
+	inicisAuthRequestBuilder.directAgency(directAgency);
+}
+// 요청값 생성시 특정 값은 하나의 문자열로 합쳐 암호화가 필요
+InicisAuthRequest inicisAuthRequest;
+try {
+	// build 함수로 해당 프로세스를 감춤
+	inicisAuthRequest = inicisAuthRequestBuilder.build();
+} catch (IllegalArgumentException e2){
+	// 필수 값 체크 오류
+	BindingErrorUtil.addError(bindingResult, "userName", "유효 하지 않은 요청 값 입니다. [ICIT04]");
+	throw new BindException(bindingResult);
+} 
+```
+
+- 사용자 정보 조회 후 재암호화
+
+```java
+InicisUserResultVo result = inicisService.callInicisResultVo(param);
+String encryptJsonData = InicisUtil.toEncryptJsonStr(result, token);
+```
+
+기존 응답값은 개별 값에 대해서만 암호화되어 있어, 필드와 값을 합쳐 모두 암호화
+
+거치는 페이지 혹은 중간단계가 아닌 최종적으로 사용하는 페이지 혹은 API 에서만 복호화
+
+- 모바일 대응
+
+결과 페이지에서 모바일 여부에 따라 분기 처리
+
+```javascript
+if('Y' === _isMobileYn){
+	(코드생략)
+	// 중간단계 페이지로 callback 이후 해당 controller 에서 분기하여 최초 요청한 페이지로 이동
+	const form = comm.util.form.createDataForm(formJson, actionURL,'POST', '_self');
+    document.body.appendChild(form);
+    form.submit();
+}else{
+	// 부모창의 함수 호출
+	// 해당 함수가 존재하는지 체크
+	if(typeof parentWindow[callBackId] !== 'function'){
+		msgPopOpen(`본인확인은 완료 되었으나 처리 완료 중 오류가 발생했습니다.`);
+		document.getElementById('btn').addEventListener('click', () => {
+			closePopup();
+		});
+	}else{
+		msgPopOpen(`본인확인 되었습니다. 아래 확인 버튼을 누르면 인증이 완료 됩니다.`);
+		document.getElementById('btn').addEventListener('click', () => {
+			parentWindow[callBackId](resultUserData);
+			closePopup();
+		});
+	}
+}
+```
 
