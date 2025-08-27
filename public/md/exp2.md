@@ -3,7 +3,7 @@
 
 - [Http Client 개선](#http-client-%EA%B0%9C%EC%84%A0)
 - [SNS 연동을 통한 사용자 인증](#sns-%EC%97%B0%EB%8F%99%EC%9D%84-%ED%86%B5%ED%95%9C-%EC%82%AC%EC%9A%A9%EC%9E%90-%EC%9D%B8%EC%A6%9D)
-- [타사 제공 SSO 연동](#%ED%83%80%EC%82%AC-%EC%A0%9C%EA%B3%B5-sso-%EB%B0%8F-otp-%EC%97%B0%EB%8F%99)
+- [타사 제공 SSO 연동](#%ED%83%80%EC%82%AC-%EC%A0%9C%EA%B3%B5-sso-%EC%97%B0%EB%8F%99)
 - [KMC, 이니시스 본인인증 API 연동](#kmc-%EC%9D%B4%EB%8B%88%EC%8B%9C%EC%8A%A4-%EB%B3%B8%EC%9D%B8%EC%9D%B8%EC%A6%9D-api-%EC%97%B0%EB%8F%99)
 
 # Http Client 개선
