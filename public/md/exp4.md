@@ -193,3 +193,59 @@ files.sort(key=lambda x: x[1], reverse=True)  # mtime 기준 최신순
 - Elastic Document 로 변환
 
 - `springframework.data.elasticsearch.repository` 를 통해 save
+
+```java
+@Bean
+public Job incrementalElasticJob(JobRepository jobRepository) {
+  return new JobBuilder(LifeBooksJobs.BOOK_JOB.getName(), jobRepository)
+    .incrementer(new RunIdIncrementer())
+    .start(contentsIndexingStep(jobRepository))
+    .listener(new JobLoggerListener())
+    .build();
+}
+
+@Bean
+@JobScope
+public Step contentsIndexingStep(JobRepository jobRepository) {
+  return new StepBuilder("contentsIndexingStep", jobRepository)
+    .<BookContentsVo, BookResultRecord>
+      chunk(CHUNK_SIZE, getTransactionManager())
+    .reader(lifebooksContentsReader())
+    .processor(elasticContentsProcessor())
+    .writer(elasticContentsWriter())
+    .allowStartIfComplete(true)
+    .build();
+}
+```
+
+**Quartz 을 통한 스케쥴링** 
+
+```java
+@Slf4j
+@Configuration
+public class QuartzConfig {
+  /**
+   * 콘텐츠 증분
+   * */
+  @Bean
+  public JobDetail incrementalElasticJobDetail() {
+    return JobBuilder.newJob(QuartzContentsJob.class)
+      .withIdentity(LifeBooksJobs.BOOK_JOB.getName()) // Job 이름 설정
+      .storeDurably()
+      .build();
+  }
+  @Bean
+  public Trigger incrementalElasticTrigger() {
+    return TriggerBuilder.newTrigger()
+      .forJob(incrementalElasticJobDetail()) // 실행할 Job 연결
+      .withIdentity(LifeBooksJobs.BOOK_JOB.getName()) // Trigger 이름 설정
+      .withSchedule(
+        SimpleScheduleBuilder.simpleSchedule()
+          .withIntervalInMinutes(1)	// 1분마다 실행
+          .repeatForever() 			// 무한 반복
+          .withMisfireHandlingInstructionNextWithRemainingCount() // 실행 실패 시 다음 실행으로 넘김, 이전 실행이 끝날 때까지 대기
+      )
+      .build();
+  }
+}
+```
