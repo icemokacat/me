@@ -297,3 +297,16 @@ if (TokenUtils.isValidToken(token)) {
 
 # KMC, 이니시스 본인인증 API 연동
 
+#### 개발시 API 문서를 참고하여 흐름도를 작성
+
+일부 프로세스 예시.
+
+<img width="1323" height="533" alt="image" src="https://github.com/user-attachments/assets/6027d2e3-3cbf-40ca-9d08-c3fb46665a3f" />
+
+#### 공통 JS 작성 및 
+
+회원가입, 아이디 찾기, 재인증 다양한 페이지에서 활용될 수 있도록 팝업 요청 스크립트를 분리 `authme.js`
+
+<img width="855" height="646" alt="image" src="https://github.com/user-attachments/assets/a6fcfece-04ab-44fb-bbd1-bd1fcb366fda" />
+
+
