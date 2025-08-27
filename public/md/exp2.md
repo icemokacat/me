@@ -3,7 +3,7 @@
 
 - [Http Client 개선](#http-client-%EA%B0%9C%EC%84%A0)
 - [SNS 연동을 통한 사용자 인증](#sns-%EC%97%B0%EB%8F%99%EC%9D%84-%ED%86%B5%ED%95%9C-%EC%82%AC%EC%9A%A9%EC%9E%90-%EC%9D%B8%EC%A6%9D)
-- [타사 제공 SSO 및 OTP 연동](#%ED%83%80%EC%82%AC-%EC%A0%9C%EA%B3%B5-sso-%EB%B0%8F-otp-%EC%97%B0%EB%8F%99)
+- [타사 제공 SSO 연동](#%ED%83%80%EC%82%AC-%EC%A0%9C%EA%B3%B5-sso-%EB%B0%8F-otp-%EC%97%B0%EB%8F%99)
 - [KMC, 이니시스 본인인증 API 연동](#kmc-%EC%9D%B4%EB%8B%88%EC%8B%9C%EC%8A%A4-%EB%B3%B8%EC%9D%B8%EC%9D%B8%EC%A6%9D-api-%EC%97%B0%EB%8F%99)
 
 # Http Client 개선
@@ -174,7 +174,126 @@ List<BookItem> books = response.getItem();
 
 # SNS 연동을 통한 사용자 인증
 
-# 타사 제공 SSO 및 OTP 연동
+1. 프론트엔드 로그인 요청 
+(일부 코드 생략)
+```javascript
+// 다양한 SNS Type에 대응할 수 있게 enum 으로 지정한 sns type을 넘겨줌
+snsTypeInput.value = 'NAVR';
+// 사용자 환경 감지 및 파라미터 설정
+const isMobileYn = cyberLogin.isMobile(userAgent) ? 'Y' : 'N';
+const loginReferer = cyberLogin.state.referrer; // 로그인 후 돌아갈 페이지
+
+// 모바일: 현재 창에서 이동, 데스크톱: 팝업창 사용
+if('Y' === isMobileYn){
+    location.href = naverPopURI;
+} else {
+    window.open(naverPopURI, targetName, popOptStr);
+}
+```
+
+2. 백엔드 인증 요청 처리 (팝업 혹은 새페이지)
+```java
+// CSRF 공격 방지를 위한 상태 토큰 생성
+String state = NaverApiUtil.createState();
+session.setAttribute("state", state);
+
+// 네이버 OAuth 인증 URL 생성
+String naverCallURL = NaverApiUtil.getNaverAuthorizeURL(clientId, state, callBackURI);
+
+// 네이버 로그인 페이지로 리다이렉트
+response.sendRedirect(naverCallURL);
+```
+
+3. 사용자 동의 후 콜백 (토큰 발급 및 프로필 요청)
+```java
+// 1) CSRF 공격 방지를 위한 state 검증
+String storedState = (String) request.getSession().getAttribute("state");
+if (!state.equals(storedState)) {
+    throw new UnauthorizedException();
+}
+
+// 2) 인증 코드로 액세스 토큰 요청
+TokenRequest tokenRequest = new TokenRequest.Builder(
+    NaverLoginGrant.AUTHORIZATION, clientId, clientSecret
+).code(code).state(state).build();
+
+TokenResponse tokenResponse = naverService.requestNewToken(tokenRequest);
+
+// 3) 액세스 토큰으로 사용자 프로필 조회
+NaverProfileResponse profileResponse = naverService.getProfile(clientId, clientSecret, accessToken);
+```
+
+4. 결과 처리 및 후속 작업
+```javascript
+function pageCallback(){
+    if('Y' === isMobileYn) {
+        // 모바일: 중간 페이지를 통해 파라미터 전달 후 최종 로그인 페이지로 이동
+        const formJson = {
+            snsUniqId: nid,
+            snsType: 'NAVR',
+            pageReturnUri: _pageReturnUri,
+            returnReferer: _returnReferer,
+            pageState: _pageState,
+        }
+        // POST 방식으로 중간 처리 페이지 호출
+    } else {
+        // 데스크톱: 부모창(원래 로그인 페이지)에 결과 전달 후 팝업 닫기
+        window.opener.document.getElementById('snsUniqId').value = nid;
+        window.opener.snsCallback();
+        window.close();
+    }
+}
+```
+
+# 타사 제공 SSO 연동
+
+SI 사업 중 기존 관리자 시스템은 JWT Token 과 SpringSecurity 를 이용하여 로그인 처리를 하고 있었으나
+
+발주처의 요청으로 드림시큐리티사에서 제공하는 SSO 연동을 해야 했습니다.
+
+이때 해당 솔루션이 JSP 형태로 제공되고 session 에 값을 넣어 주는 방식으로 로그인 처리를 하게끔되어 있어
+
+아래의 문제가 발생했습니다.
+
+- 현재 사용하고 있는 view engine은 Thymeleaf 이며, JSP는 호출 할 수 없음
+- 기존 Springsecurity 에서는 `SecurityContext` 객체에 로그인 상태를 저장하기 때문에 기존 로그인과 호환이 되지 않음
+
+#### Thymeleaf 와 JSP 혼용 사용가능 하게 설정 변경
+
+```yml
+spring:
+  # thymeleaf 설정
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    view-names: thymeleaf/*
+    check-template-location: true
+
+  # view - jsp
+  mvc:
+    view:
+      prefix: /WEB-INF/views/
+      suffix: .jsp
+```
+
+반드시 기존 경로와 구분되게 `view-names` 를 설정
+
+#### SpringSecurity 처리 변경
+
+`JwtAuthorizationFilter` 코드 일부 추가 및 수정
+
+💡 개발 중 화면과 서비스 분리에 대한 요구사항이 계속 변경되었고, 마지막은 한 프로젝트에서 관리하기로 되어
+
+  JWT Token 과 Session 을 동시에 관리하는 조금 비효율 적인 구조로 security 가 설정되었습니다.
+
+```java
+if (TokenUtils.isValidToken(token)) {
+	// 드림시큐리티사에서 제공한 session에 설정된 로그인 정보를 추가로 확인
+	(코드생략)
+	// SecurityContext 에 Authentication 객체를 저장
+	SecurityContextHolder.getContext().setAuthentication(authentication);
+}
+```
 
 # KMC, 이니시스 본인인증 API 연동
 
